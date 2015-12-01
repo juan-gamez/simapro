@@ -1,0 +1,14 @@
+# Este archivo va en nginx/sites-enabled
+server {
+	listen 85;
+	root /var/www/html/simapro;
+	index index.php;
+	server_name simapro;
+	location / {
+		try_files $uri $uri/ /index.php;
+	}
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php5-fpm.sock;
+	}
+}

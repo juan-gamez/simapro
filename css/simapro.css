@@ -1,0 +1,66 @@
+.validation-error{
+  /*display: inline-block;*/
+  font-size: 15px;
+  margin-top: -10px;
+  margin-left: 4px;
+}
+.glyphicon-warning-sign{
+  color: #990000;
+  font-size: 17px;
+  padding-top: 3px;
+  padding-right: 5px;
+  padding-bottom: 17px;
+  vertical-align: top;
+}
+
+.main-sidebar, .left-side {
+  /*width: 250px;*/
+}
+
+.active-menu-item{
+  color: #EEE !important;
+}
+
+.simapro-title {
+    position: relative;
+    width: 100vw;
+    left: calc(-50vw + 50%);
+}
+
+a.enlace-formulario{
+  font-size: larger;
+  margin-bottom: 13px;
+  display: inline-block;
+}
+
+.alert-ok{
+  background: #00a65a !important;
+  opacity: 0.80 !important;
+}
+
+.alert-ok, .alert-error{
+  /*padding-bottom: 5px;*/
+  margin-bottom: 7px;
+}
+
+@media (max-width:767px) {
+  .main-sidebar, .left-side {
+      padding-top: 50px !important;
+  }
+  #example_length{
+    text-align: left !important;
+  }
+  #example_filter{
+    text-align: right !important;
+  }
+
+}
+
+.table-border-bold td, .table-border-bold th{
+  border: 1px solid #999 !important; 
+}
+
+#context-menu{
+  display: none;
+  position: absolute;
+}
