@@ -23,7 +23,6 @@ class MAsignaturas extends CI_Model{
       return $this->db->error();
     }
     return $this->db->last_query();
-    
   }
 
   function getOneById($id){
@@ -48,6 +47,32 @@ class MAsignaturas extends CI_Model{
     $this->db->order_by("codigo", "asc"); 
     $query = $this->db->get();
     return $query->result_array();
+  }
+
+  function nombre_dia_semana($dia_semana){
+    switch($dia_semana){
+      case 0:
+        return "Lun";
+      break;
+      case 1:
+        return "Mar";
+      break;
+      case 2:
+        return "Mier";
+      break;
+      case 3:
+        return "Jue";
+      break;
+      case 4:
+        return "Vie"; 
+      break;
+      case 5:
+        return "Sab";
+      break;
+      case 6:
+        return "Dom";
+      break;
+    }
   }
 
 }

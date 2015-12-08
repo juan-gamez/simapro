@@ -87,5 +87,12 @@ class MGrupos extends CI_Model{
     return $query->result_array();
   }
 
+  function getAllGrupoHorariosAula(){
+    $this->db->select('aula_id, aula_nombre, codigo, nombre, hora_inicio, hora_fin, dia_semana, tipo, numero');
+    $this->db->from('v_grupo_horarios_aula');
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
 }
 ?>

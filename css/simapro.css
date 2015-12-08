@@ -64,3 +64,12 @@ a.enlace-formulario{
   display: none;
   position: absolute;
 }
+
+#tabla_reporte_horarios_aulas{
+  border:1px solid gray;
+}
+#tabla_reporte_horarios_aulas td, #tabla_reporte_horarios_aulas th{
+  border:1px solid gray;
+  padding-left: 1px;
+  padding-right: 1px;
+}

@@ -6,90 +6,17 @@ class Asignaturas_ciclo extends LoggedInController {
   function __construct()
   {
     parent::__construct();
-    //$this->load->model('MAsignaturas_ciclo','',TRUE);
+    $this->load->model('MAsignaturas','',TRUE);
+    $this->load->model('MAulas','',TRUE);
+    $this->load->model('MGrupos','',TRUE);
     $this->load->helper('url');
+    date_default_timezone_set("America/El_Salvador");
   }
 
   function index()
   {
     $data['header']['title'] = 'Asignaturas en el Ciclo';
     $this->load->view('asignaturas_en_el_ciclo', $data);
-  }
-
-  function formulario_agregar()
-  {
-    $data['header']['title'] = 'Agregar Asignaturas';
-    $data['escuelas'] = $this->MAreasAdministrativas->getAreas_Administrativas();
-    $this->load->view('asignaturas_formulario', $data);
-  }
-
- function agregar()
-  {
-    $this->load->library('form_validation');
-    $this->form_validation->set_error_delimiters('<div class="validation-error"><span class="glyphicon glyphicon-warning-sign"></span>', '</div>');
-    $this->form_validation->set_rules('asignaturas_nombre', 'nombre', 'trim|required|is_unique[asignaturas.nombre]');
-    $this->form_validation->set_rules('asignaturas_facultad', 'escuela', 'trim|is_unique[asignaturas.escuela]|valid_email');
-    $this->form_validation->set_message('required', 'El campo %s es requerido');
-    $this->form_validation->set_message('valid_email', 'El campo %s debe ser un escuela valido');
-    $this->form_validation->set_message('is_unique', 'El campo %s debe ser unico');
-    
-    if($this->form_validation->run() == FALSE){
-      $data['header']['title'] = 'Agregar Asignaturas';
-      $this->load->view('asignaturas_formulario', $data);
-      return;
-    }
-    else{
-      $id = $this->MAsignaturas->save($this->input->post('asignaturas_nombre'), $this->input->post('asignaturas_facultad'));
-      if($id==true)  $data['msg_ok']    = 'El usuario ha sido agregado';
-      if($id==false) $data['msg_error'] = 'Error: El usuario no fue agregado';
-      $data['header']['title'] = 'Agregar Asignaturas';
-      $data['facultades'] = $this->MAsignaturas->getFacultades();
-      $this->load->view('asignaturas', $data);
-      return;
-    }
-  }
-  
-  function modificar_formulario()
-  {
-    $id = $this->uri->segment(3);
-    if(is_numeric($id)){
-      $row = $this->MAsignaturas->getOneById($id);
-      $data['mod'] = array(
-        'asignaturas_id' => $row->id,
-        'asignaturas_nombre' => $row->nombre,
-        'asignaturas_facultad' => $row->escuela
-      );
-      $data['header']['title'] = 'Modificar Asignaturas';
-      $data['action'] = "/asignaturas/modificar/{$id}";
-      $this->load->view('asignaturas_formulario', $data);
-      return;
-    }
-  }
-
-  function modificar()
-  {
-    $this->load->library('form_validation');
-    $this->form_validation->set_error_delimiters('<div class="validation-error"><span class="glyphicon glyphicon-warning-sign"></span>', '</div>');
-    $this->form_validation->set_rules('asignaturas_nombre', 'nombre', 'trim|required');
-    $this->form_validation->set_rules('asignaturas_facultad', 'escuela', 'trim|valid_email');
-    $this->form_validation->set_message('required', 'El campo %s es requerido');
-    $this->form_validation->set_message('valid_email', 'El campo %s debe ser un escuela valido');
-    $this->form_validation->set_message('is_unique', 'El campo %s debe ser unico');
-    
-    if($this->form_validation->run() == FALSE){
-      $data['header']['title'] = 'Modificar Asignaturas';
-      $data['action'] = "/asignaturas/modificar/{$this->input->post('asignaturas_id')}";
-      $this->load->view('asignaturas_formulario', $data);
-      return;
-    }
-    else{
-      $id = $this->MAsignaturas->update($this->input->post('asignaturas_id'), $this->input->post('asignaturas_nombre'), $this->input->post('asignaturas_facultad'));
-      if($id==true)  $data['msg_ok']    = 'El usuario ha sido modificado';
-      if($id==false) $data['msg_error'] = 'Error: El usuario no fue modificado';
-      $data['header']['title'] = 'Asignaturas';
-      $this->load->view('asignaturas', $data);
-      return;
-    }
   }
 
   function ajax()
@@ -121,14 +48,32 @@ class Asignaturas_ciclo extends LoggedInController {
   }
 
   function asociar_asignatura_ciclo(){
-    //print $this->input->get('asignaturas');
     echo json_encode(
       $this->input->post('asignatura')
     );
-    /*die();*/
+  }
+
+  function asignaturas_ciclo(){
+    $grupoHorariosAula = $this->MGrupos->getAllGrupoHorariosAula();
+    print "<tr><th colspan=\"2\">Asignaturas</th>";
+    foreach ($this->MAulas->getAulas() as $aulas){
+      print "<th>".$aulas['nombre']."</th>";
+    }
+    print "</tr>";
+    foreach ($this->MAsignaturas->getAsignaturas_ciclo() as $asignaturas_ciclo){
+      print "<tr><td>".$asignaturas_ciclo['codigo']."</td><td>".$asignaturas_ciclo['nombre']."</td>";
+      foreach ($this->MAulas->getAulas() as $aulas){
+        print "<td>";
+        foreach ($grupoHorariosAula as $row){
+          if($row['codigo']==$asignaturas_ciclo['codigo'] and $row['aula_id']==$aulas['id']){
+            $hora_inicio = date("G:i",strtotime($row['hora_inicio']));
+            $hora_fin = date("G:i",strtotime($row['hora_fin']));
+            print "{$row['tipo']} {$row['numero']} {$this->MAsignaturas->nombre_dia_semana($row['dia_semana'])} {$hora_inicio}-{$hora_fin}<br>";
+          }
+        }
+        print "</td>";
+      }
+      print "</tr>";
+    }
   }
 }
-
-/*
-
-*/
